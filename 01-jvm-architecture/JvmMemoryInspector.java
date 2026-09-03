@@ -2,10 +2,14 @@ public class JvmMemoryInspector {
     public static void main(String[] args) {
         printRuntimeIdentity();
 
-        long elapsed = benchmarkTightLoop(100_000_000);
+        long[] sizes = { 1_000, 1_000_000, 100_000_000 };
 
-        System.out.println("Elapsed time: " + elapsed + " ns");
-
+        for (long size : sizes) {
+            for (int run = 1; run <= 3; run++) {
+                long elapsed = benchmarkTightLoop(size);
+                System.out.println("iterations=" + size + " | run " + run + " | " + elapsed + " ns");
+            }
+        }
     }
 
     static void printRuntimeIdentity() {
