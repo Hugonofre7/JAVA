@@ -13,6 +13,33 @@ public class RecordsAndPolymorphism {
 
         System.out.println(snapshot1);
         System.out.println(snapshot1.nodeId());
+
+        Resource[] resources = new Resource[] { new CloudNode(), new StorageVolume() };
+
+        for (Resource resource : resources) {
+            resource.shutdown();
+        }
+
     }
 
+}
+
+sealed interface Resource permits CloudNode, StorageVolume {
+
+    void shutdown();
+}
+
+final class CloudNode implements Resource {
+    @Override
+    public void shutdown() {
+        System.out.println("Draining conexiones de CloudNode...");
+    }
+
+}
+
+final class StorageVolume implements Resource {
+    @Override
+    public void shutdown() {
+        System.out.println("Deteniendo StorageVolume...");
+    }
 }
