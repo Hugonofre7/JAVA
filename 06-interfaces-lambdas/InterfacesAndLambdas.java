@@ -9,7 +9,11 @@ interface RetryPolicy {
 public class InterfacesAndLambdas {
 
     public static void main(String[] args) {
+        benchmarkLambdaCreation(1);
+        benchmarkLambdaCreation(1_000_000);
+
         int maxAttempts = 3;
+
         Predicate<Integer> lambdaVersion = n -> n % 2 == 0;
         Predicate<Integer> methodRefVersion = InterfacesAndLambdas::isEven;
         Predicate<Integer> greaterThanTen = n -> n > 10;
@@ -44,6 +48,17 @@ public class InterfacesAndLambdas {
 
     static boolean isEven(int n) {
         return n % 2 == 0;
+    }
+
+    static void benchmarkLambdaCreation(int n) {
+        long start = System.nanoTime();
+        for (int i = 0; i < n; i++) {
+            Runnable r = () -> {
+            };
+            r.run();
+        }
+        long elapsed = System.nanoTime() - start;
+        System.out.println("n=" + n + " | total=" + elapsed + " ns | promedio=" + (elapsed / n) + " ns/iter");
     }
 
 }
