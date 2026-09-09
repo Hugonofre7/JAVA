@@ -1,4 +1,5 @@
 import java.util.function.Predicate;
+import java.util.function.Function;
 
 @FunctionalInterface
 interface RetryPolicy {
@@ -13,6 +14,7 @@ public class InterfacesAndLambdas {
         Predicate<Integer> methodRefVersion = InterfacesAndLambdas::isEven;
         Predicate<Integer> greaterThanTen = n -> n > 10;
         Predicate<Integer> combined = methodRefVersion.and(greaterThanTen);
+
         System.out.println(lambdaVersion.test(4));
         System.out.println(methodRefVersion.test(4));
         System.out.println(greaterThanTen.test(15));
@@ -29,6 +31,15 @@ public class InterfacesAndLambdas {
                 break;
             }
         }
+        Function<String, String> toUpperCase = s -> s.toUpperCase();
+        System.out.println(toUpperCase.apply("node-01"));
+
+        Function<String, String> toLowerCase = s -> s.toLowerCase();
+        Function<String, String> addServer = s -> "Server_" + s;
+        Function<String, String> pipeline = toUpperCase.andThen(addServer);
+        System.out.println(toLowerCase.apply("NODE-01"));
+        System.out.println(addServer.apply("node-01"));
+        System.out.println(pipeline.apply("node-01"));
     }
 
     static boolean isEven(int n) {
