@@ -36,6 +36,12 @@ public class ExceptionsAndLogging {
 
         }
 
+        RetryPolicy maxThreeRetries = attempt -> attempt < 3;
+        writeLogWithRetry(
+                "/ruta/que/no/existe/app.log",
+                "evento con reintentos",
+                maxThreeRetries);
+
     }
 
     static int riskyOperation(int input) {
@@ -62,6 +68,29 @@ public class ExceptionsAndLogging {
 
         }
 
+    }
+
+    static void writeLogWithRetry(String path, String entry, RetryPolicy policy) {
+        int attempt = 0;
+        while (true) {
+            try {
+                writeLogEntry(path, entry);
+                System.out.println("Escritura exitosa en intento " + attempt);
+                return;
+            } catch (LogWriteException e) {
+                System.out.println("Intento fallido: " + attempt);
+                System.out.println("Causa: " + e.getCause().getMessage());
+
+                if (!policy.shouldRetry(attempt)) {
+                    System.out.println("Reintentos agotados.");
+                    return;
+                }
+
+                attempt++;
+
+            }
+
+        }
     }
 
 }
