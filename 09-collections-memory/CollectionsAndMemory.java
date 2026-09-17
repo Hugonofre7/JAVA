@@ -8,6 +8,16 @@ public class CollectionsAndMemory {
         List<Integer> arrayList = new ArrayList<>();
         List<Integer> linkedList = new LinkedList<>();
 
+        for (int i = 0; i < 100000; i++) {
+            arrayList.add(i);
+            linkedList.add(i);
+        }
+
+        long arrayListTime = benchmarkRandomAccess(arrayList, 10_000);
+        long linkedListTime = benchmarkRandomAccess(linkedList, 10_000);
+        System.out.println("ArrayList: " + arrayListTime + " ns");
+        System.out.println("LinkedList: " + linkedListTime + " ns");
+
     }
 
     static long benchmarkRandomAccess(List<Integer> list, int accesses) {
