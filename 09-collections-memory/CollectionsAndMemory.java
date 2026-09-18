@@ -25,6 +25,18 @@ public class CollectionsAndMemory {
         System.out.println("HashMap with bad hash: " + badHashTime + " ns");
         System.out.println("HashMap with normal hash: " + normalHashTime + " ns");
 
+        RingBuffer<String> logs = new RingBuffer<>(3);
+        logs.add("A");
+        logs.add("B");
+        logs.add("C");
+        logs.add("D");
+        logs.add("E");
+        System.out.println("Size: " + logs.size());
+
+        for (int i = 0; i < logs.size(); i++) {
+            System.out.println(logs.get(i));
+        }
+
     }
 
     static long benchmarkRandomAccess(List<Integer> list, int accesses) {
@@ -78,5 +90,40 @@ class BadKey {
         }
 
         return id == other.id;
+    }
+}
+
+class RingBuffer<T> {
+    private final Object[] buffer;
+    private int head = 0;
+    private int size = 0;
+    private final int capacity;
+
+    RingBuffer(int capacity) {
+        this.capacity = capacity;
+        this.buffer = new Object[capacity];
+    }
+
+    void add(T item) {
+        if (size < capacity) {
+            int index = (head + size) % capacity;
+            buffer[index] = item;
+            size++;
+        }
+
+        else {
+            buffer[head] = item;
+            head = (head + 1) % capacity;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    T get(int index) {
+        int physicalIndex = (head + index) % capacity;
+        return (T) buffer[physicalIndex];
+    }
+
+    int size() {
+        return size;
     }
 }
