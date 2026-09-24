@@ -6,6 +6,9 @@ public class ConcurrencyAndThreads {
     static int counter = 0;
     static int synchronizedCounter = 0;
 
+    static final Object lockA = new Object();
+    static final Object lockB = new Object();
+
     static void incrementCounter(int times) {
         for (int i = 0; i < times; i++) {
             counter++;
@@ -36,52 +39,97 @@ public class ConcurrencyAndThreads {
         executor.awaitTermination(10, TimeUnit.SECONDS);
     }
 
+    static void acquireAThenB() {
+        synchronized (lockA) {
+            System.out.println(Thread.currentThread().getName() + " tiene lockA, esperando lockB...");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            synchronized (lockB) {
+                System.out.println(Thread.currentThread().getName() + " tiene ambos locks");
+            }
+        }
+    }
+
+    static void acquireBThenA() {
+        synchronized (lockB) {
+            System.out.println(Thread.currentThread().getName() + " tiene lockB, esperando lockA...");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            synchronized (lockA) {
+                System.out.println(Thread.currentThread().getName() + " tiene ambos locks");
+            }
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
-        Runnable task = () -> incrementCounter(100_000);
-        Runnable synchronizedTask = () -> incrementSynchronizedCounter(100_000);
+        /*
+         * // Retos 1 y 2 comentados temporalmente para una salida más limpia
+         * Runnable task = () -> incrementCounter(100_000);
+         * Runnable synchronizedTask = () -> incrementSynchronizedCounter(100_000);
+         * 
+         * Thread[] threads = new Thread[10];
+         * for (int i = 0; i < threads.length; i++) {
+         * threads[i] = new Thread(task);
+         * }
+         * 
+         * long unsynchronizedStart = System.nanoTime();
+         * for (Thread thread : threads) {
+         * thread.start();
+         * }
+         * 
+         * for (Thread thread : threads) {
+         * thread.join();
+         * }
+         * 
+         * long unsynchronizedEnd = System.nanoTime();
+         * long unsynchronizedTime = unsynchronizedEnd - unsynchronizedStart;
+         * 
+         * Thread[] synchronizedThreads = new Thread[10];
+         * 
+         * for (int i = 0; i < synchronizedThreads.length; i++) {
+         * synchronizedThreads[i] = new Thread(synchronizedTask);
+         * }
+         * 
+         * long synchronizedStart = System.nanoTime();
+         * 
+         * for (Thread thread : synchronizedThreads) {
+         * thread.start();
+         * }
+         * 
+         * for (Thread thread : synchronizedThreads) {
+         * thread.join();
+         * }
+         * 
+         * long synchronizedEnd = System.nanoTime();
+         * long synchronizedTime = synchronizedEnd - synchronizedStart;
+         * 
+         * System.out.println("Final counter: " + counter);
+         * System.out.println("Unsynchronized time: " + unsynchronizedTime + " ns");
+         * System.out.println("Final synchronized counter: " + synchronizedCounter);
+         * System.out.println("Synchronized time: " + synchronizedTime + " ns");
+         * 
+         * System.out.println("\n--- Ejecutando Reto 3: ExecutorService ---");
+         * runWithThreadPool(3, 10);
+         */
+        System.out.println("--- Ejecutando Reto 4: Simulación de Deadlock ---");
 
-        Thread[] threads = new Thread[10];
-        for (int i = 0; i < threads.length; i++) {
-            threads[i] = new Thread(task);
-        }
+        Thread thread1 = new Thread(ConcurrencyAndThreads::acquireAThenB, "Hilo-1");
+        Thread thread2 = new Thread(ConcurrencyAndThreads::acquireBThenA, "Hilo-2");
 
-        long unsynchronizedStart = System.nanoTime();
-        for (Thread thread : threads) {
-            thread.start();
-        }
+        thread1.start();
+        thread2.start();
 
-        for (Thread thread : threads) {
-            thread.join();
-        }
+        thread1.join(3000);
+        thread2.join(3000);
 
-        long unsynchronizedEnd = System.nanoTime();
-        long unsynchronizedTime = unsynchronizedEnd - unsynchronizedStart;
-
-        Thread[] synchronizedThreads = new Thread[10];
-
-        for (int i = 0; i < synchronizedThreads.length; i++) {
-            synchronizedThreads[i] = new Thread(synchronizedTask);
-        }
-
-        long synchronizedStart = System.nanoTime();
-
-        for (Thread thread : synchronizedThreads) {
-            thread.start();
-        }
-
-        for (Thread thread : synchronizedThreads) {
-            thread.join();
-        }
-
-        long synchronizedEnd = System.nanoTime();
-        long synchronizedTime = synchronizedEnd - synchronizedStart;
-
-        System.out.println("Final counter: " + counter);
-        System.out.println("Unsynchronized time: " + unsynchronizedTime + " ns");
-        System.out.println("Final synchronized counter: " + synchronizedCounter);
-        System.out.println("Synchronized time: " + synchronizedTime + " ns");
-
-        System.out.println("\n--- Ejecutando Reto 3: ExecutorService ---");
-        runWithThreadPool(3, 10);
+        System.out.println("\n--- Estado después del timeout de 3 segundos ---");
+        System.out.println("Hilo 1 sigue vivo (Deadlock): " + thread1.isAlive());
+        System.out.println("Hilo 2 sigue vivo (Deadlock): " + thread2.isAlive());
     }
 }
