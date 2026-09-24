@@ -1,3 +1,7 @@
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 public class ConcurrencyAndThreads {
     static int counter = 0;
     static int synchronizedCounter = 0;
@@ -18,19 +22,30 @@ public class ConcurrencyAndThreads {
         }
     }
 
+    static void runWithThreadPool(int poolSize, int numTasks) throws InterruptedException {
+        ExecutorService executor = Executors.newFixedThreadPool(poolSize);
+
+        for (int i = 1; i <= numTasks; i++) {
+            final int taskId = i;
+            executor.submit(() -> {
+                System.out.println("Hilo: " + Thread.currentThread().getName() + " | Tarea: " + taskId);
+            });
+        }
+
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.SECONDS);
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Runnable task = () -> incrementCounter(100_000);
-
         Runnable synchronizedTask = () -> incrementSynchronizedCounter(100_000);
 
         Thread[] threads = new Thread[10];
-
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new Thread(task);
         }
 
         long unsynchronizedStart = System.nanoTime();
-
         for (Thread thread : threads) {
             thread.start();
         }
@@ -65,5 +80,8 @@ public class ConcurrencyAndThreads {
         System.out.println("Unsynchronized time: " + unsynchronizedTime + " ns");
         System.out.println("Final synchronized counter: " + synchronizedCounter);
         System.out.println("Synchronized time: " + synchronizedTime + " ns");
+
+        System.out.println("\n--- Ejecutando Reto 3: ExecutorService ---");
+        runWithThreadPool(3, 10);
     }
 }
