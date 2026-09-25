@@ -113,16 +113,16 @@ public class ConcurrencyAndThreads {
          * System.out.println("Unsynchronized time: " + unsynchronizedTime + " ns");
          * System.out.println("Final synchronized counter: " + synchronizedCounter);
          * System.out.println("Synchronized time: " + synchronizedTime + " ns");
-         * 
-         * System.out.println("\n--- Ejecutando Reto 3: ExecutorService ---");
-         * runWithThreadPool(3, 10);
          */
+        System.out.println("\n--- Ejecutando Reto 3: ExecutorService ---");
+        runWithThreadPool(3, 10);
+
         System.out.println("--- Ejecutando Reto 4: Simulación de Deadlock ---");
 
         // Reto 1 de Diagnostics: Pausa de 20 segundos para dar tiempo de correr jps
         // System.out.println("Pausa de 20 segundos... Ejecuta 'jps -l' en otra terminal
         // AHORA.");
-        Thread.sleep(30_000);
+        // Thread.sleep(60_000);
 
         Thread thread1 = new Thread(ConcurrencyAndThreads::acquireAThenB, "Hilo-1");
         Thread thread2 = new Thread(ConcurrencyAndThreads::acquireBThenA, "Hilo-2");
