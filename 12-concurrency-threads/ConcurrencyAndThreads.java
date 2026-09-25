@@ -120,7 +120,8 @@ public class ConcurrencyAndThreads {
         System.out.println("--- Ejecutando Reto 4: Simulación de Deadlock ---");
 
         // Reto 1 de Diagnostics: Pausa de 20 segundos para dar tiempo de correr jps
-        System.out.println("Pausa de 20 segundos... Ejecuta 'jps -l' en otra terminal AHORA.");
+        // System.out.println("Pausa de 20 segundos... Ejecuta 'jps -l' en otra terminal
+        // AHORA.");
         Thread.sleep(20_000);
 
         Thread thread1 = new Thread(ConcurrencyAndThreads::acquireAThenB, "Hilo-1");
@@ -129,8 +130,9 @@ public class ConcurrencyAndThreads {
         thread1.start();
         thread2.start();
 
-        thread1.join(3000);
-        thread2.join(3000);
+        // Espera larga para darnos tiempo de analizar el Deadlock
+        thread1.join(60000);
+        thread2.join(60000);
 
         System.out.println("\n--- Estado después del timeout de 3 segundos ---");
         System.out.println("Hilo 1 sigue vivo (Deadlock): " + thread1.isAlive());
