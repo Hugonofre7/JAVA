@@ -19,7 +19,15 @@ Métricas observadas durante inactividad/sleep:
 Conclusión: La recolección de basura es reactiva al llenado de la memoria Eden. 
 Sin asignación activa de objetos no ocurren ciclos de GC.
 
+--- RETO 3: Detección de Deadlock con jcmd Thread.print ---
+PID Analizado: 26367
+Comando: jcmd 26367 Thread.print
 
+Resultado:
+- Detección automática confirmada: "Found 1 deadlock."
+- Hilo-1 (tid=0x0000000894ce2300) retiene 0x0000000308713e08 y espera 0x0000000308713e18.
+- Hilo-2 (tid=0x0000000894ce3100) retiene 0x0000000308713e18 y espera 0x0000000308713e08.
+- Confirmada la presencia de hilos de infraestructura de la JVM (GC Thread#0, C2 CompilerThread0, etc.).
 
 
 
