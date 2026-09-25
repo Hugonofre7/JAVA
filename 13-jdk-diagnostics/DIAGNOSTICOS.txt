@@ -7,9 +7,19 @@ Comando: jps -l
 PID obtenido: 23232
 Clase Principal: ConcurrencyAndThreads
 
-# Reto 2 - Diagnóstico de Deadlock con jstack
-PID Analizado: 23232
-Comando: jstack 23232
+--- RETO 2: Monitoreo de Memoria Heap con jstat ---
+Comando: jstat -gc <PID> 1000 5
+
+Métricas observadas durante inactividad/sleep:
+- EU (Eden Used): Constante en 4010.7 KB
+- OU (Old Used): Constante en 193388.3 KB
+- YGC (Young GC Count): 220 (sin incremento)
+- FGC (Full GC Count): 4 (sin incremento)
+
+Conclusión: La recolección de basura es reactiva al llenado de la memoria Eden. 
+Sin asignación activa de objetos no ocurren ciclos de GC.
+
+
 
 
 
