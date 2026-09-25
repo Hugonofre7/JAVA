@@ -122,7 +122,7 @@ public class ConcurrencyAndThreads {
         // Reto 1 de Diagnostics: Pausa de 20 segundos para dar tiempo de correr jps
         // System.out.println("Pausa de 20 segundos... Ejecuta 'jps -l' en otra terminal
         // AHORA.");
-        Thread.sleep(20_000);
+        Thread.sleep(30_000);
 
         Thread thread1 = new Thread(ConcurrencyAndThreads::acquireAThenB, "Hilo-1");
         Thread thread2 = new Thread(ConcurrencyAndThreads::acquireBThenA, "Hilo-2");
