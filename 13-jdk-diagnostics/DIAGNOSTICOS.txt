@@ -3,3 +3,13 @@ Comando: ps aux | grep ConcurrencyAndThreads
 PID identificado: 21349
 Proceso: java ConcurrencyAndThreads
 
+# Reto 2 - Diagnóstico de Deadlock con jstack
+PID Analizado: 23232
+Comando: jstack 23232
+
+Resultado de la JVM:
+- Se identificó 1 deadlock activo entre Hilo-1 e Hilo-2.
+- Hilo-1 retiene lockA (0x0000000532713dc0) y espera lockB.
+- Hilo-2 retiene lockB (0x0000000532713dd0) y espera lockA.
+- Estado de ambos hilos: BLOCKED (on object monitor).
+
